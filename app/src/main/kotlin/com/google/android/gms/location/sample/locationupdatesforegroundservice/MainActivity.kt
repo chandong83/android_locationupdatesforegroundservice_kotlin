@@ -24,7 +24,7 @@ class MainActivity: AppCompatActivity(), SharedPreferences.OnSharedPreferenceCha
     private val TAG = MainActivity::class.java.simpleName
     private val REQUEST_PERMISSIONS_REQUEST_CODE = 34
     private var myReceiver: MyReceiver? = null
-    private var mService: LocationUpdatesServiceK? = null
+    private var mService: LocationUpdatesService? = null
     private var mBound = false
     private var mRequestLocationUpdatesButton: Button? = null
     private var mRemoveLocationUpdatesButton: Button? = null
@@ -35,7 +35,7 @@ class MainActivity: AppCompatActivity(), SharedPreferences.OnSharedPreferenceCha
 
     private var mServiceConnection = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
-            val binder = service as LocationUpdatesServiceK.LocalBinder
+            val binder = service as LocationUpdatesService.LocalBinder
             mService = binder.getService()
             mBound = true
         }
@@ -78,14 +78,14 @@ class MainActivity: AppCompatActivity(), SharedPreferences.OnSharedPreferenceCha
 
         setButtonsState(Utils.requestingLocationUpdates(this))
 
-        bindService(Intent(this, LocationUpdatesServiceK::class.java), mServiceConnection,
+        bindService(Intent(this, LocationUpdatesService::class.java), mServiceConnection,
                 BIND_AUTO_CREATE)
     }
 
     override fun onResume() {
         super.onResume()
         LocalBroadcastManager.getInstance(this).registerReceiver(myReceiver!!,
-                IntentFilter(LocationUpdatesServiceK.ACTION_BROADCAST))
+                IntentFilter(LocationUpdatesService.ACTION_BROADCAST))
     }
 
     override fun onPause() {
@@ -161,7 +161,7 @@ class MainActivity: AppCompatActivity(), SharedPreferences.OnSharedPreferenceCha
 
     inner class MyReceiver: BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
-            val location = intent!!.getParcelableExtra<Location>(LocationUpdatesServiceK.EXTRA_LOCATION)
+            val location = intent!!.getParcelableExtra<Location>(LocationUpdatesService.EXTRA_LOCATION)
             if (location != null) {
                 Toast.makeText(this@MainActivity, Utils.getLocationText(location),
                         Toast.LENGTH_SHORT).show()

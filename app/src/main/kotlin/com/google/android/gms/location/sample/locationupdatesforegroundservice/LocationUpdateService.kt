@@ -12,9 +12,9 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.google.android.gms.location.*
 
 
-class LocationUpdatesServiceK: Service() {
+class LocationUpdatesService: Service() {
     private val EXTRA_STARTED_FROM_NOTIFICATION = "$PACKAGE_NAME.started_from_notification"
-    private val TAG = LocationUpdatesServiceK::class.simpleName
+    private val TAG = LocationUpdatesService::class.simpleName
     private val CHANNEL_ID = "channel_01"
 
     private val mBinder: IBinder = LocalBinder()
@@ -34,8 +34,8 @@ class LocationUpdatesServiceK: Service() {
 
     companion object {
         const val PACKAGE_NAME = "com.google.android.gms.location.sample.locationupdatesforegroundservice"
-        const val EXTRA_LOCATION = "${LocationUpdatesServiceK.PACKAGE_NAME}.location"
-        const val ACTION_BROADCAST = "${LocationUpdatesServiceK.PACKAGE_NAME}.broadcast"
+        const val EXTRA_LOCATION = "${LocationUpdatesService.PACKAGE_NAME}.location"
+        const val ACTION_BROADCAST = "${LocationUpdatesService.PACKAGE_NAME}.broadcast"
     }
     init {
     }
@@ -113,7 +113,7 @@ class LocationUpdatesServiceK: Service() {
     fun requestLocationUpdates() {
         Log.i(TAG, "Requesting Location updates")
         Utils.setRequestingLocationUpdates(this, true)
-        startService(Intent(applicationContext, LocationUpdatesServiceK::class.java))
+        startService(Intent(applicationContext, LocationUpdatesService::class.java))
         try{
             mFusedLocationClient?.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper())
         }catch (unlikely: SecurityException) {
@@ -135,7 +135,7 @@ class LocationUpdatesServiceK: Service() {
     }
 
     private fun getNotification(): Notification {
-        val intent:Intent = Intent(this, LocationUpdatesServiceK::class.java)
+        val intent:Intent = Intent(this, LocationUpdatesService::class.java)
         val text:CharSequence = Utils.getLocationText(mLocation)
         intent.putExtra(EXTRA_STARTED_FROM_NOTIFICATION, true)
 
@@ -196,8 +196,8 @@ class LocationUpdatesServiceK: Service() {
     }
 
     inner class LocalBinder: Binder() {
-        fun getService(): LocationUpdatesServiceK? {
-            return this@LocationUpdatesServiceK
+        fun getService(): LocationUpdatesService? {
+            return this@LocationUpdatesService
         }
     }
 
